@@ -47,6 +47,7 @@ envs.each do |env_id, env_data|
       options = {
         :path => cache_envdir,
         :recursive => true,
+        :depth => 1,
       }
       @logger.info("Clonging Git repo #{mod_vcs_uri} into #{cache_moddir}")
       g = Git.clone(mod_vcs_uri, mod_id, options)
