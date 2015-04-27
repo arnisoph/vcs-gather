@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'git'
+require 'logger'
+require 'yaml'
+
+#$LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+
+def set_logger(file, level)
+  file ? (@logger = Logger.new(file)) : @logger = Logger.new(STDOUT)
+  @logger.level = level
+  @logger
+end
+
+file = 'dist.yaml'
+pwd = File.dirname(__FILE__)
+
+if File.file?('dist.yml')
+  file = 'dist.yml'
+end
+
+config = YAML.load_file(file)
+@logger = set_logger('gather.log', Logger::INFO)
+
+envs = config['envs']
+
+envs.each do |env_id, env_data|
+  env_name = env_data['name'] || env_id
+
+  modules = env_data['modules'].sort
+  modules.each do |mod_id, mod_data|
+    mod_name = mod_data['name']
+    vcs_uri_prefix = config['config']['vcs_uri_prefix']
+    vcs_uri_suffix = config['config']['vcs_uri_suffix']
+    mod_vcs_uri = mod_data['git'] || "#{vcs_uri_prefix}#{mod_name}#{vcs_uri_suffix}"
+
+    cachedir = "#{pwd}/#{config['config']['cachedir']}"
+    cache_envdir = "#{cachedir}/#{env_name}"
+    cache_moddir = "#{cache_envdir}/#{mod_id}"
+    #FileUtils.mkpath(cache_moddir) if !Dir.exists?(cache_moddir)
+
+    g = nil
+    ref = mod_data['ref'] || 'master'
+
+    if !Dir.exists?(cache_moddir)
+      options = {
+        :path => cache_envdir,
+        :recursive => true,
+      }
+      @logger.info("Clonging Git repo #{mod_vcs_uri} into #{cache_moddir}")
+      g = Git.clone(mod_vcs_uri, mod_id, options)
+    else
+      g = Git.open(cache_moddir, :log => @logger)
+      g.reset_hard()
+      g.fetch('origin', {:t => true})
+      g.pull('origin', ref)
+    end
+
+    g.checkout(ref)
+
+  end
+end

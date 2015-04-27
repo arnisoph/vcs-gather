@@ -1,0 +1,56 @@
+config:
+  cachedir: cache
+  vcs_uri_prefix: 'https://github.com/'
+  vcs_uri_suffix: .git
+envs:
+  #dev:
+  #  name: development
+  #  modules:
+  #    apache:
+  #      name: puppetlabs/puppetlabs-apache
+  #      ref: master
+  #qa:
+  #  modules:
+  #    apache:
+  #      name: puppetlabs/puppetlabs-apache
+  #      git: 'https://github.com/bechtoldt/puppetlabs-apache.git'
+  #      ref: 1.4.0
+  #    sysctl:
+  #      name: thias/puppet-sysctl
+  infra_prod:
+    modules:
+      alternatives:
+        name: puppet-community/puppet-alternatives
+      apache:
+        name: puppetlabs/puppetlabs-apache
+      concat_native:
+        name: theforeman/puppet-concat_native
+      dhcp:
+        name: theforeman/puppet-dhcp
+      dns:
+        name: theforeman/puppet-dns
+      foreman:
+        name: theforeman/puppet-foreman
+      foreman_proxy:
+        name: theforeman/puppet-foreman_proxy
+      git:
+        name: theforeman/puppet-git
+      libvirt:
+        name: thias/puppet-libvirt
+      ntp:
+        name: puppetlabs/puppetlabs-ntp
+      mysql:
+        name: puppetlabs/puppetlabs-mysql
+      puppet:
+        name: theforeman/puppet-puppet
+      postgresql:
+        name: puppetlabs/puppetlabs-postgresql
+      resolvconf:
+        name: saz/puppet-resolv_conf
+      stdlib:
+        name: puppetlabs/puppetlabs-stdlib
+      tftp:
+        name: theforeman/puppet-tftp
+      tftp2:
+        name: theforeman/puppet-tftp
+postrun: []
