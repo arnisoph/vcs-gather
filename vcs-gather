@@ -63,10 +63,12 @@ envs.each do |env_id, env_data|
       }
       logger.info("Clonging Git repo #{mod_vcs_uri} into #{cache_moddir}")
       g = Git.clone(mod_vcs_uri, mod_id, options)
+      g.fetch('origin', {:t => true})
     else
       g = Git.open(cache_moddir, :log => logger)
       g.reset_hard()
       g.fetch('origin', {:t => true})
+      g.checkout(ref) # TODO improve this
       g.pull('origin', ref)
     end
 
