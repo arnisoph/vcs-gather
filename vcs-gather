@@ -32,7 +32,8 @@ if options.fetch(:verbose, false)
 end
 
 file = options['config_file'] || 'config.yaml'
-pwd = File.dirname(__FILE__)
+#pwd = File.dirname(__FILE__)
+pwd = Dir.pwd
 config = YAML.load_file(file)
 logger = set_logger('gather.log', loglevel)
 
